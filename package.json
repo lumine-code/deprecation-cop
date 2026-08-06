@@ -43,8 +43,8 @@
   "dependencies": {
     "@lumine-code/etch": "github:lumine-code/etch#ba07febd6dc1df9b0917f9579da85fbd96a16a75",
     "@lumine-code/fs-plus": "github:lumine-code/fs-plus#dbede762a7a1019a024d8f8c8de5e4f04ef2bd78",
-    "@lumine-code/underscore-plus": "github:lumine-code/underscore-plus#3187fd4c2dd47f50044efe51deb7c662ddac437c",
-    "grim": "^2.0.3"
+    "@lumine-code/grim": "github:lumine-code/grim#363f1da2c5a7e25054b5837fa9b62c49f34da834",
+    "@lumine-code/underscore-plus": "github:lumine-code/underscore-plus#3187fd4c2dd47f50044efe51deb7c662ddac437c"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

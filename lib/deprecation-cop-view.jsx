@@ -3,7 +3,7 @@ const _ = require("@lumine-code/underscore-plus");
 const { CompositeDisposable } = require("atom");
 const etch = require("@lumine-code/etch");
 const fs = require("@lumine-code/fs-plus");
-const Grim = require("grim");
+const Grim = require("@lumine-code/grim");
 const path = require("path");
 
 module.exports = class DeprecationCopView {

@@ -1,4 +1,4 @@
-const Grim = require("grim");
+const Grim = require("@lumine-code/grim");
 const DeprecationCopView = require("../lib/deprecation-cop-view");
 
 describe("DeprecationCopStatusBarView", () => {
