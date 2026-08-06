@@ -1,17 +1,10 @@
 const Grim = require("grim");
 const DeprecationCopView = require("../lib/deprecation-cop-view");
-const _ = require("@lumine-code/underscore-plus");
 
 describe("DeprecationCopStatusBarView", () => {
   let [deprecatedMethod, statusBarView, workspaceElement] = [];
 
   beforeEach(() => {
-    // jasmine.Clock.useMock() cannot mock _.debounce
-    // http://stackoverflow.com/questions/13707047/spec-for-async-functions-using-jasmine
-    spyOn(_, "debounce").andCallFake((func) => (...args) => {
-      return func.apply(this, args);
-    });
-
     jasmine.snapshotDeprecations();
 
     workspaceElement = atom.views.getView(atom.workspace);
@@ -48,28 +41,6 @@ describe("DeprecationCopStatusBarView", () => {
     expect(statusBarView.textContent).toBe("3 deprecations");
     expect(statusBarView.offsetHeight).toBeGreaterThan(0);
   });
-
-  // TODO: Remove conditional when the new StyleManager deprecation APIs reach stable.
-  if (atom.styles.getDeprecations != null) {
-    it("increments when there are deprecated selectors", () => {
-      atom.styles.addStyleSheet(
-        `\
-atom-text-editor::shadow { color: red; }\
-`,
-        { sourcePath: "file-1.less" },
-      );
-      expect(statusBarView.textContent).toBe("1 deprecation");
-      expect(statusBarView).toBeVisible();
-      atom.styles.addStyleSheet(
-        `\
-atom-text-editor::shadow { color: blue; }\
-`,
-        { sourcePath: "file-2.less" },
-      );
-      expect(statusBarView.textContent).toBe("2 deprecations");
-      expect(statusBarView).toBeVisible();
-    });
-  }
 
   it("opens deprecation cop tab when clicked", () => {
     expect(atom.workspace.getActivePane().getActiveItem()).not.toExist();

@@ -1,16 +1,10 @@
 const Grim = require("grim");
 const path = require("path");
-const _ = require("@lumine-code/underscore-plus");
-const etch = require("@lumine-code/etch");
 
 describe("DeprecationCopView", () => {
   let [deprecationCopView, workspaceElement] = [];
 
   beforeEach(() => {
-    spyOn(_, "debounce").andCallFake((func) => (...args) => {
-      return func.apply(this, args);
-    });
-
     workspaceElement = atom.views.getView(atom.workspace);
     jasmine.attachToDOM(workspaceElement);
 
@@ -37,47 +31,6 @@ describe("DeprecationCopView", () => {
     expect(deprecationCopView.element.textContent).toMatch(/Deprecated calls/);
     expect(deprecationCopView.element.textContent).toMatch(/This isn't used/);
   });
-
-  // TODO: Remove conditional when the new StyleManager deprecation APIs reach stable.
-  if (atom.styles.getDeprecations != null) {
-    it("displays deprecated selectors", () => {
-      atom.styles.addStyleSheet("atom-text-editor::shadow { color: red }", {
-        sourcePath: path.join("some-dir", "packages", "package-1", "file-1.less"),
-      });
-      atom.styles.addStyleSheet("atom-text-editor::shadow { color: yellow }", {
-        context: "atom-text-editor",
-        sourcePath: path.join("some-dir", "packages", "package-1", "file-2.less"),
-      });
-      atom.styles.addStyleSheet("atom-text-editor::shadow { color: blue }", {
-        sourcePath: path.join("another-dir", "packages", "package-2", "file-3.less"),
-      });
-      atom.styles.addStyleSheet("atom-text-editor::shadow { color: gray }", {
-        sourcePath: path.join("another-dir", "node_modules", "package-3", "file-4.less"),
-      });
-
-      const promise = etch.getScheduler().getNextUpdatePromise();
-      waitsForPromise(() => promise);
-
-      runs(() => {
-        const packageItems = deprecationCopView.element.querySelectorAll("ul.selectors > li");
-        expect(packageItems.length).toBe(3);
-        expect(packageItems[0].textContent).toMatch(/package-1/);
-        expect(packageItems[1].textContent).toMatch(/package-2/);
-        expect(packageItems[2].textContent).toMatch(/Other/);
-
-        const packageDeprecationItems = packageItems[0].querySelectorAll("li.source-file");
-        expect(packageDeprecationItems.length).toBe(2);
-        expect(packageDeprecationItems[0].textContent).toMatch(/atom-text-editor/);
-        expect(packageDeprecationItems[0].querySelector("a").href).toMatch(
-          "some-dir/packages/package-1/file-1.less",
-        );
-        expect(packageDeprecationItems[1].textContent).toMatch(/:host/);
-        expect(packageDeprecationItems[1].querySelector("a").href).toMatch(
-          "some-dir/packages/package-1/file-2.less",
-        );
-      });
-    });
-  }
 
   it("skips stack entries which go through node_modules/ files when determining package name", () => {
     const stack = [

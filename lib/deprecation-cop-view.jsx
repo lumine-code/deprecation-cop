@@ -15,11 +15,6 @@ module.exports = class DeprecationCopView {
         etch.update(this);
       }),
     );
-    this.subscriptions.add(
-      atom.styles.onDidUpdateDeprecations(() => {
-        etch.update(this);
-      }),
-    );
     etch.initialize(this);
     this.subscriptions.add(
       atom.commands.add(this.element, {
@@ -84,13 +79,6 @@ module.exports = class DeprecationCopView {
             <span>Deprecated calls</span>
           </div>
           <ul className="list-tree has-collapsable-children">{this.renderDeprecatedCalls()}</ul>
-
-          <div className="panel-heading">
-            <span>Deprecated selectors</span>
-          </div>
-          <ul className="selectors list-tree has-collapsable-children">
-            {this.renderDeprecatedSelectors()}
-          </ul>
         </div>
       </div>
     );
@@ -156,60 +144,6 @@ module.exports = class DeprecationCopView {
     }
   }
 
-  renderDeprecatedSelectors() {
-    const deprecationsByPackageName = this.getDeprecatedSelectorsByPackageName();
-    const packageNames = Object.keys(deprecationsByPackageName);
-    if (packageNames.length === 0) {
-      return <li className="list-item">No deprecated selectors</li>;
-    } else {
-      return packageNames.map((packageName) => (
-        <li className="deprecation list-nested-item collapsed">
-          <div
-            className="deprecation-info list-item"
-            onclick={(event) => event.target.parentElement.classList.toggle("collapsed")}
-          >
-            <span className="text-highlight">{packageName}</span>
-          </div>
-
-          <ul className="list">
-            {this.renderPackageActionsIfNeeded(packageName)}
-            {deprecationsByPackageName[packageName].map(
-              ({ packagePath, sourcePath, deprecation }) => {
-                const relativeSourcePath = path.relative(packagePath, sourcePath);
-                const issueTitle = `Deprecated selector in \`${relativeSourcePath}\``;
-                const issueBody = `In \`${relativeSourcePath}\`: \n\n${deprecation.message}`;
-                return (
-                  <li className="list-item source-file">
-                    <a
-                      className="source-url"
-                      href={sourcePath}
-                      onclick={(event) => {
-                        event.preventDefault();
-                        this.openLocation(sourcePath);
-                      }}
-                    >
-                      {relativeSourcePath}
-                    </a>
-                    <ul className="list">
-                      <li className="list-item deprecation-detail">
-                        <span className="text-warning icon icon-alert" />
-                        <div
-                          className="list-item deprecation-message"
-                          innerHTML={atom.tools.markdown.render(deprecation.message)}
-                        />
-                        {this.renderSelectorIssueURLIfNeeded(packageName, issueTitle, issueBody)}
-                      </li>
-                    </ul>
-                  </li>
-                );
-              },
-            )}
-          </ul>
-        </li>
-      ));
-    }
-  }
-
   renderPackageActionsIfNeeded(packageName) {
     if (packageName && atom.packages.getLoadedPackage(packageName)) {
       return (
@@ -235,37 +169,6 @@ module.exports = class DeprecationCopView {
               Disable Package
             </button>
           </div>
-        </div>
-      );
-    } else {
-      return "";
-    }
-  }
-
-  encodeURI(str) {
-    return encodeURI(str).replace(/#/g, "%23").replace(/;/g, "%3B").replace(/%20/g, "+");
-  }
-
-  renderSelectorIssueURLIfNeeded(packageName, issueTitle, issueBody) {
-    const repoURL = this.getRepoURL(packageName);
-    if (repoURL) {
-      const issueURL = `${repoURL}/issues/new?title=${this.encodeURI(
-        issueTitle,
-      )}&body=${this.encodeURI(issueBody)}`;
-      return (
-        <div className="btn-toolbar">
-          <button
-            className="btn issue-url"
-            data-issue-title={issueTitle}
-            data-repo-url={repoURL}
-            data-issue-url={issueURL}
-            onclick={(event) => {
-              event.preventDefault();
-              this.openIssueURL(repoURL, issueURL, issueTitle);
-            }}
-          >
-            Report Issue
-          </button>
         </div>
       );
     } else {
@@ -398,37 +301,6 @@ module.exports = class DeprecationCopView {
       }
     }
     return deprecatedCallsByPackageName;
-  }
-
-  getDeprecatedSelectorsByPackageName() {
-    const deprecatedSelectorsByPackageName = {};
-    if (atom.styles.getDeprecations) {
-      const deprecatedSelectorsBySourcePath = atom.styles.getDeprecations();
-      for (const sourcePath of Object.keys(deprecatedSelectorsBySourcePath)) {
-        const deprecation = deprecatedSelectorsBySourcePath[sourcePath];
-        const components = sourcePath.split(path.sep);
-        const packagesComponentIndex = components.indexOf("packages");
-        let packageName;
-        let packagePath;
-        if (packagesComponentIndex === -1) {
-          packageName = "Other"; // could be the editor itself or the personal style sheet
-          packagePath = "";
-        } else {
-          packageName = components[packagesComponentIndex + 1];
-          packagePath = components.slice(0, packagesComponentIndex + 1).join(path.sep);
-        }
-
-        deprecatedSelectorsByPackageName[packageName] =
-          deprecatedSelectorsByPackageName[packageName] || [];
-        deprecatedSelectorsByPackageName[packageName].push({
-          packagePath,
-          sourcePath,
-          deprecation,
-        });
-      }
-    }
-
-    return deprecatedSelectorsByPackageName;
   }
 
   getPackageName(stack) {
