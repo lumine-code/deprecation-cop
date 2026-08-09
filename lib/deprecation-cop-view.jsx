@@ -218,12 +218,12 @@ module.exports = class DeprecationCopView {
   async openIssueURL(repoURL, issueURL, issueTitle) {
     const issue = await this.findSimilarIssue(repoURL, issueTitle);
     if (issue) {
-      atom.openExternal(issue.html_url);
+      atom.shell.openExternal(issue.html_url);
     } else if (process.platform === "win32") {
       // Windows will not launch URLs greater than ~2000 bytes so we need to shrink it
-      atom.openExternal((await this.shortenURL(issueURL)) || issueURL);
+      atom.shell.openExternal((await this.shortenURL(issueURL)) || issueURL);
     } else {
-      atom.openExternal(issueURL);
+      atom.shell.openExternal(issueURL);
     }
   }
 
@@ -371,7 +371,7 @@ module.exports = class DeprecationCopView {
     if (process.platform === "win32") {
       pathToOpen = pathToOpen.replace(/^\//, "");
     }
-    atom.open({ pathsToOpen: [pathToOpen] });
+    atom.app.openWindow({ pathsToOpen: [pathToOpen] });
   }
 
   getURI() {
