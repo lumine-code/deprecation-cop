@@ -5,7 +5,7 @@ describe("DeprecationCopView", () => {
   let [deprecationCopView, workspaceElement] = [];
 
   beforeEach(() => {
-    workspaceElement = atom.views.getView(atom.workspace);
+    workspaceElement = lumine.views.getView(lumine.workspace);
     jasmine.attachToDOM(workspaceElement);
 
     jasmine.snapshotDeprecations();
@@ -14,13 +14,13 @@ describe("DeprecationCopView", () => {
     deprecatedMethod();
 
     spyOn(Grim, "deprecate"); // Don't fail tests if when using deprecated APIs in deprecation cop's activation
-    const activationPromise = atom.packages.activatePackage("deprecation-cop");
+    const activationPromise = lumine.packages.activatePackage("deprecation-cop");
 
-    atom.commands.dispatch(workspaceElement, "deprecation-cop:view");
+    lumine.commands.dispatch(workspaceElement, "deprecation-cop:view");
 
     waitsForPromise(() => activationPromise);
 
-    waitsFor(() => (deprecationCopView = atom.workspace.getActivePane().getActiveItem()));
+    waitsFor(() => (deprecationCopView = lumine.workspace.getActivePane().getActiveItem()));
 
     runs(() => jasmine.unspy(Grim, "deprecate"));
   });
@@ -37,31 +37,31 @@ describe("DeprecationCopView", () => {
       {
         functionName: "function0",
         location: path.normalize(
-          "/Users/user/.atom/packages/package1/node_modules/atom-space-pen-viewslib/space-pen.js:55:66",
+          "/Users/user/.lumine/packages/package1/node_modules/legacy-viewslib/space-pen.js:55:66",
         ),
         fileName: path.normalize(
-          "/Users/user/.atom/packages/package1/node_modules/atom-space-pen-views/lib/space-pen.js",
+          "/Users/user/.lumine/packages/package1/node_modules/legacy-views/lib/space-pen.js",
         ),
       },
       {
         functionName: "function1",
         location: path.normalize(
-          "/Users/user/.atom/packages/package1/node_modules/atom-space-pen-viewslib/space-pen.js:15:16",
+          "/Users/user/.lumine/packages/package1/node_modules/legacy-viewslib/space-pen.js:15:16",
         ),
         fileName: path.normalize(
-          "/Users/user/.atom/packages/package1/node_modules/atom-space-pen-views/lib/space-pen.js",
+          "/Users/user/.lumine/packages/package1/node_modules/legacy-views/lib/space-pen.js",
         ),
       },
       {
         functionName: "function2",
-        location: path.normalize("/Users/user/.atom/packages/package2/lib/module.js:13:14"),
-        fileName: path.normalize("/Users/user/.atom/packages/package2/lib/module.js"),
+        location: path.normalize("/Users/user/.lumine/packages/package2/lib/module.js:13:14"),
+        fileName: path.normalize("/Users/user/.lumine/packages/package2/lib/module.js"),
       },
     ];
 
     const packagePathsByPackageName = new Map([
-      ["package1", path.normalize("/Users/user/.atom/packages/package1")],
-      ["package2", path.normalize("/Users/user/.atom/packages/package2")],
+      ["package1", path.normalize("/Users/user/.lumine/packages/package1")],
+      ["package2", path.normalize("/Users/user/.lumine/packages/package2")],
     ]);
 
     spyOn(deprecationCopView, "getPackagePathsByPackageName").andReturn(packagePathsByPackageName);

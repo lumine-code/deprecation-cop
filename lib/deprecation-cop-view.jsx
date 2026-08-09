@@ -1,6 +1,6 @@
 /** @jsx etch.dom */
 const _ = require("@lumine-code/underscore-plus");
-const { CompositeDisposable } = require("atom");
+const { CompositeDisposable } = require("lumine");
 const etch = require("@lumine-code/etch");
 const fs = require("@lumine-code/fs-plus");
 const Grim = require("@lumine-code/grim");
@@ -17,7 +17,7 @@ module.exports = class DeprecationCopView {
     );
     etch.initialize(this);
     this.subscriptions.add(
-      atom.commands.add(this.element, {
+      lumine.commands.add(this.element, {
         "core:move-up": () => {
           this.scrollUp();
         },
@@ -90,14 +90,14 @@ module.exports = class DeprecationCopView {
     if (packageNames.length === 0) {
       return <li className="list-item">No deprecated calls</li>;
     } else {
-      //TODO_LUMINE: Validate 'atom core'
+      //TODO_LUMINE: Validate 'lumine core'
       return packageNames.sort().map((packageName) => (
         <li className="deprecation list-nested-item collapsed">
           <div
             className="deprecation-info list-item"
             onclick={(event) => event.target.parentElement.classList.toggle("collapsed")}
           >
-            <span className="text-highlight">{packageName || "atom core"}</span>
+            <span className="text-highlight">{packageName || "lumine core"}</span>
             <span>{` (${_.pluralize(
               deprecationsByPackageName[packageName].length,
               "deprecation",
@@ -111,7 +111,7 @@ module.exports = class DeprecationCopView {
                 <span className="text-warning icon icon-alert" />
                 <div
                   className="list-item deprecation-message"
-                  innerHTML={atom.tools.markdown.render(deprecation.getMessage())}
+                  innerHTML={lumine.tools.markdown.render(deprecation.getMessage())}
                 />
                 {this.renderIssueURLIfNeeded(
                   packageName,
@@ -145,7 +145,7 @@ module.exports = class DeprecationCopView {
   }
 
   renderPackageActionsIfNeeded(packageName) {
-    if (packageName && atom.packages.getLoadedPackage(packageName)) {
+    if (packageName && lumine.packages.getLoadedPackage(packageName)) {
       return (
         <div className="padded">
           <div className="btn-group">
@@ -218,12 +218,12 @@ module.exports = class DeprecationCopView {
   async openIssueURL(repoURL, issueURL, issueTitle) {
     const issue = await this.findSimilarIssue(repoURL, issueTitle);
     if (issue) {
-      atom.shell.openExternal(issue.html_url);
+      lumine.shell.openExternal(issue.html_url);
     } else if (process.platform === "win32") {
       // Windows will not launch URLs greater than ~2000 bytes so we need to shrink it
-      atom.shell.openExternal((await this.shortenURL(issueURL)) || issueURL);
+      lumine.shell.openExternal((await this.shortenURL(issueURL)) || issueURL);
     } else {
-      atom.shell.openExternal(issueURL);
+      lumine.shell.openExternal(issueURL);
     }
   }
 
@@ -272,7 +272,7 @@ module.exports = class DeprecationCopView {
   }
 
   getRepoURL(packageName) {
-    const loadedPackage = atom.packages.getLoadedPackage(packageName);
+    const loadedPackage = lumine.packages.getLoadedPackage(packageName);
     if (loadedPackage && loadedPackage.metadata && loadedPackage.metadata.repository) {
       const url = loadedPackage.metadata.repository.url || loadedPackage.metadata.repository;
       return url.replace(/\.git$/, "");
@@ -306,7 +306,7 @@ module.exports = class DeprecationCopView {
   getPackageName(stack) {
     // Stack frames report the real path of a symlinked package, so match
     // against that for anything installed under a package directory.
-    const packageDirPaths = atom.packages
+    const packageDirPaths = lumine.packages
       .getPackageDirPaths()
       .map((packageDirPath) => path.normalize(packageDirPath + path.sep));
     const packagePaths = this.getPackagePathsByPackageName();
@@ -336,7 +336,7 @@ module.exports = class DeprecationCopView {
         }
       }
 
-      if (atom.getUserInitScriptPath() === fileName) {
+      if (lumine.getUserInitScriptPath() === fileName) {
         return `Your local ${path.basename(fileName)} file`;
       }
     }
@@ -349,7 +349,7 @@ module.exports = class DeprecationCopView {
       return this.packagePathsByPackageName;
     } else {
       this.packagePathsByPackageName = new Map();
-      for (const pack of atom.packages.getLoadedPackages()) {
+      for (const pack of lumine.packages.getLoadedPackages()) {
         this.packagePathsByPackageName.set(pack.name, pack.path);
       }
       return this.packagePathsByPackageName;
@@ -357,12 +357,12 @@ module.exports = class DeprecationCopView {
   }
 
   checkForUpdates() {
-    atom.workspace.open("lumine://config/updates");
+    lumine.workspace.open("lumine://config/updates");
   }
 
   disablePackage(packageName) {
     if (packageName) {
-      atom.packages.disablePackage(packageName);
+      lumine.packages.disablePackage(packageName);
     }
   }
 
@@ -371,7 +371,7 @@ module.exports = class DeprecationCopView {
     if (process.platform === "win32") {
       pathToOpen = pathToOpen.replace(/^\//, "");
     }
-    atom.app.openWindow({ pathsToOpen: [pathToOpen] });
+    lumine.app.openWindow({ pathsToOpen: [pathToOpen] });
   }
 
   getURI() {

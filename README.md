@@ -14,7 +14,7 @@ To install `deprecation-cop` search for _deprecation-cop_ in the Install pane of
 
 ## Commands
 
-Commands available in `atom-workspace`:
+Commands available in `lumine-workspace`:
 
 - `deprecation-cop:view`: open the deprecation cop view.
 

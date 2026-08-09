@@ -7,10 +7,10 @@ describe("DeprecationCopStatusBarView", () => {
   beforeEach(() => {
     jasmine.snapshotDeprecations();
 
-    workspaceElement = atom.views.getView(atom.workspace);
+    workspaceElement = lumine.views.getView(lumine.workspace);
     jasmine.attachToDOM(workspaceElement);
-    waitsForPromise(() => atom.packages.activatePackage("status-bar"));
-    waitsForPromise(() => atom.packages.activatePackage("deprecation-cop"));
+    waitsForPromise(() => lumine.packages.activatePackage("status-bar"));
+    waitsForPromise(() => lumine.packages.activatePackage("deprecation-cop"));
 
     waitsFor(() => (statusBarView = workspaceElement.querySelector(".deprecation-cop-status")));
   });
@@ -43,10 +43,10 @@ describe("DeprecationCopStatusBarView", () => {
   });
 
   it("opens deprecation cop tab when clicked", () => {
-    expect(atom.workspace.getActivePane().getActiveItem()).not.toExist();
+    expect(lumine.workspace.getActivePane().getActiveItem()).not.toExist();
 
     waitsFor(function (done) {
-      atom.workspace.onDidOpen(function ({ item }) {
+      lumine.workspace.onDidOpen(function ({ item }) {
         expect(item instanceof DeprecationCopView).toBe(true);
         done();
       });
