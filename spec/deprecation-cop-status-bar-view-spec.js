@@ -4,15 +4,17 @@ const DeprecationCopView = require("../lib/deprecation-cop-view");
 describe("DeprecationCopStatusBarView", () => {
   let [deprecatedMethod, statusBarView, workspaceElement] = [];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jasmine.snapshotDeprecations();
 
     workspaceElement = lumine.views.getView(lumine.workspace);
     jasmine.attachToDOM(workspaceElement);
-    waitsForPromise(() => lumine.packages.activatePackage("status-bar"));
-    waitsForPromise(() => lumine.packages.activatePackage("deprecation-cop"));
+    await lumine.packages.activatePackage("status-bar");
+    await lumine.packages.activatePackage("deprecation-cop");
 
-    waitsFor(() => (statusBarView = workspaceElement.querySelector(".deprecation-cop-status")));
+    await conditionPromise(
+      () => (statusBarView = workspaceElement.querySelector(".deprecation-cop-status")),
+    );
   });
 
   afterEach(() => jasmine.restoreDeprecationsSnapshot());
@@ -42,10 +44,10 @@ describe("DeprecationCopStatusBarView", () => {
     expect(statusBarView.offsetHeight).toBeGreaterThan(0);
   });
 
-  it("opens deprecation cop tab when clicked", () => {
+  it("opens deprecation cop tab when clicked", async () => {
     expect(lumine.workspace.getActivePane().getActiveItem()).not.toExist();
 
-    waitsFor(function (done) {
+    await new Promise((done) => {
       lumine.workspace.onDidOpen(function ({ item }) {
         expect(item instanceof DeprecationCopView).toBe(true);
         done();

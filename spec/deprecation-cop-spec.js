@@ -10,25 +10,27 @@ describe("DeprecationCop", () => {
   });
 
   describe("when the deprecation-cop:view event is triggered", () =>
-    it("displays the deprecation cop pane", () => {
+    it("displays the deprecation cop pane", async () => {
       lumine.commands.dispatch(workspaceElement, "deprecation-cop:view");
 
-      waitsForPromise(() => activationPromise);
+      await activationPromise;
 
       let deprecationCopView = null;
-      waitsFor(() => (deprecationCopView = lumine.workspace.getActivePane().getActiveItem()));
+      await conditionPromise(
+        () => (deprecationCopView = lumine.workspace.getActivePane().getActiveItem()),
+      );
 
-      runs(() => expect(deprecationCopView instanceof DeprecationCopView).toBeTruthy());
+      expect(deprecationCopView instanceof DeprecationCopView).toBeTruthy();
     }));
 
   describe("deactivating the package", () =>
-    it("removes the deprecation cop pane item", () => {
+    it("removes the deprecation cop pane item", async () => {
       lumine.commands.dispatch(workspaceElement, "deprecation-cop:view");
 
-      waitsForPromise(() => activationPromise);
+      await activationPromise;
 
-      waitsForPromise(() => Promise.resolve(lumine.packages.deactivatePackage("deprecation-cop"))); // Wrapped for Promise & non-Promise deactivate
+      await Promise.resolve(lumine.packages.deactivatePackage("deprecation-cop")); // Wrapped for Promise & non-Promise deactivate
 
-      runs(() => expect(lumine.workspace.getActivePane().getActiveItem()).not.toExist());
+      expect(lumine.workspace.getActivePane().getActiveItem()).not.toExist();
     }));
 });

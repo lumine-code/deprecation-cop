@@ -4,7 +4,7 @@ const path = require("path");
 describe("DeprecationCopView", () => {
   let [deprecationCopView, workspaceElement] = [];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     workspaceElement = lumine.views.getView(lumine.workspace);
     jasmine.attachToDOM(workspaceElement);
 
@@ -18,11 +18,13 @@ describe("DeprecationCopView", () => {
 
     lumine.commands.dispatch(workspaceElement, "deprecation-cop:view");
 
-    waitsForPromise(() => activationPromise);
+    await activationPromise;
 
-    waitsFor(() => (deprecationCopView = lumine.workspace.getActivePane().getActiveItem()));
+    await conditionPromise(
+      () => (deprecationCopView = lumine.workspace.getActivePane().getActiveItem()),
+    );
 
-    runs(() => jasmine.unspy(Grim, "deprecate"));
+    jasmine.unspy(Grim, "deprecate");
   });
 
   afterEach(() => jasmine.restoreDeprecationsSnapshot());
@@ -64,7 +66,9 @@ describe("DeprecationCopView", () => {
       ["package2", path.normalize("/Users/user/.lumine/packages/package2")],
     ]);
 
-    spyOn(deprecationCopView, "getPackagePathsByPackageName").andReturn(packagePathsByPackageName);
+    spyOn(deprecationCopView, "getPackagePathsByPackageName").and.returnValue(
+      packagePathsByPackageName,
+    );
 
     const packageName = deprecationCopView.getPackageName(stack);
     expect(packageName).toBe("package2");
