@@ -371,7 +371,7 @@ module.exports = class DeprecationCopView {
     if (process.platform === "win32") {
       pathToOpen = pathToOpen.replace(/^\//, "");
     }
-    lumine.app.openWindow({ pathsToOpen: [pathToOpen] });
+    lumine.application.openWindow({ pathsToOpen: [pathToOpen] });
   }
 
   getURI() {
