@@ -10,7 +10,7 @@ Shows deprecated calls used by the editor and installed packages.
 
 ## Installation
 
-To install `deprecation-cop` search for _deprecation-cop_ in the Install pane of the Lumine settings or run `lumine --install lumine-code/deprecation-cop`.
+To install `deprecation-cop` search for it in the Install pane of the Lumine settings, or run the command `lumine --install lumine-code/deprecation-cop`.
 
 ## Commands
 
@@ -20,7 +20,7 @@ Commands available in `lumine-workspace`:
 
 ## Services
 
-- **status-bar** (`^1.0.0`): consumed to show the deprecation count in the status bar.
+- `status-bar`: consumed to show the deprecation count in the status bar.
 
 ## Customization
 
