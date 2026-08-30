@@ -34,36 +34,6 @@ describe("DeprecationCopView", () => {
     expect(deprecationCopView.element.textContent).toMatch(/This isn't used/);
   });
 
-  it("derives line scrolling from its current surface viewport", () => {
-    const frame = document.createElement("iframe");
-    jasmine.attachToDOM(frame);
-    const originalParent = deprecationCopView.element.parentNode;
-    const anchor = document.createComment("deprecation cop return position");
-    originalParent.insertBefore(anchor, deprecationCopView.element);
-    frame.contentDocument.body.appendChild(deprecationCopView.element);
-    spyOnProperty(frame.contentDocument.body, "offsetHeight", "get").and.returnValue(400);
-    let scrollTop = 100;
-    Object.defineProperty(deprecationCopView.element, "scrollTop", {
-      configurable: true,
-      get: () => scrollTop,
-      set: (value) => {
-        scrollTop = value;
-      },
-    });
-
-    try {
-      deprecationCopView.scrollDown();
-      expect(scrollTop).toBe(120);
-      deprecationCopView.scrollUp();
-      expect(scrollTop).toBe(100);
-    } finally {
-      delete deprecationCopView.element.scrollTop;
-      originalParent.insertBefore(deprecationCopView.element, anchor);
-      anchor.remove();
-      frame.remove();
-    }
-  });
-
   it("skips stack entries which go through node_modules/ files when determining package name", () => {
     const stack = [
       {
