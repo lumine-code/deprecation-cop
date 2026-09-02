@@ -42,8 +42,8 @@
   },
   "dependencies": {
     "@lumine-code/etch": "github:lumine-code/etch#caf7601cca3b105e502763391236bfaf86392e5a",
-    "@lumine-code/fs-plus": "github:lumine-code/fs-plus#d864d8178848421b65132e5992398c84ec4e64df",
-    "@lumine-code/grim": "github:lumine-code/grim#3d7e7ffd93c0d644698282e52d16c99a2a94af78",
+    "@lumine-code/fs-plus": "github:lumine-code/fs-plus#905b14a8ba174e7d1236db25c189efd3e1473d57",
+    "@lumine-code/grim": "github:lumine-code/grim#fd256fdeb0390b016c8c9da58e73dd91cf09a03d",
     "@lumine-code/underscore-plus": "github:lumine-code/underscore-plus#fd9c48ac852a303e1fbc2e1ae77dbefa57ba6052"
   },
   "devDependencies": {
