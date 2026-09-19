@@ -113,11 +113,7 @@ module.exports = class DeprecationCopView {
                   className="list-item deprecation-message"
                   innerHTML={lumine.tools.markdown.render(deprecation.getMessage())}
                 />
-                {this.renderIssueURLIfNeeded(
-                  packageName,
-                  deprecation,
-                  this.buildIssueURL(packageName, deprecation, stack),
-                )}
+                {this.renderIssueActionsIfNeeded(packageName, deprecation, stack)}
                 <div className="stack-trace">
                   {stack.map(({ functionName, location }) => (
                     <div className="stack-line">
@@ -176,10 +172,13 @@ module.exports = class DeprecationCopView {
     }
   }
 
-  renderIssueURLIfNeeded(packageName, deprecation, issueURL) {
-    if (packageName && issueURL) {
+  renderIssueActionsIfNeeded(packageName, deprecation, stack) {
+    if (packageName) {
       const repoURL = this.getRepoURL(packageName);
       const issueTitle = `${deprecation.getOriginName()} is deprecated.`;
+      const issueURL = this.buildIssueURL(repoURL, issueTitle);
+      const issueReport = this.buildIssueReport(deprecation, stack);
+      if (!issueURL) return "";
       return (
         <div className="btn-toolbar">
           <button
@@ -192,8 +191,17 @@ module.exports = class DeprecationCopView {
               this.openIssueURL(repoURL, issueURL, issueTitle);
             }}
           >
-            Report Issue
+            Open Issue
           </button>
+          <button
+            className="btn icon icon-clippy copy-issue-report"
+            title="Copy deprecation report to clipboard"
+            aria-label="Copy deprecation report to clipboard"
+            onclick={(event) => {
+              event.preventDefault();
+              this.copyIssueReport(issueReport);
+            }}
+          />
         </div>
       );
     } else {
@@ -201,74 +209,77 @@ module.exports = class DeprecationCopView {
     }
   }
 
-  buildIssueURL(packageName, deprecation, stack) {
-    const repoURL = this.getRepoURL(packageName);
-    if (repoURL) {
-      const title = `${deprecation.getOriginName()} is deprecated.`;
-      const stacktrace = stack
-        .map(({ functionName, location }) => `${functionName} (${location})`)
-        .join("\n");
-      const body = `${deprecation.getMessage()}\n\`\`\`\n${stacktrace}\n\`\`\``;
-      return `${repoURL}/issues/new?title=${encodeURI(title)}&body=${encodeURI(body)}`;
-    } else {
-      return null;
+  buildIssueURL(repoURL, issueTitle) {
+    if (!repoURL) return null;
+    const issueURL = new URL(`${repoURL.replace(/\/$/, "")}/issues/new`);
+    issueURL.searchParams.set("title", issueTitle);
+    issueURL.searchParams.set(
+      "body",
+      "<!-- Copy the deprecation report from Lumine and paste it here. -->",
+    );
+    return issueURL.href;
+  }
+
+  buildIssueReport(deprecation, stack) {
+    const stacktrace = stack
+      .map(({ functionName, location }) => `${functionName} (${location})`)
+      .join("\n");
+    return `${deprecation.getMessage()}\n\`\`\`\n${stacktrace}\n\`\`\``;
+  }
+
+  async copyIssueReport(issueReport) {
+    try {
+      await lumine.clipboard.write(issueReport);
+      lumine.notifications.addSuccess("Deprecation report copied to the clipboard.");
+    } catch (error) {
+      lumine.notifications.addWarning("Unable to copy the deprecation report.", {
+        detail: error.message,
+        dismissable: true,
+      });
     }
   }
 
   async openIssueURL(repoURL, issueURL, issueTitle) {
     const issue = await this.findSimilarIssue(repoURL, issueTitle);
-    if (issue) {
-      lumine.shell.openExternal(issue.html_url);
-    } else if (process.platform === "win32") {
-      // Windows will not launch URLs greater than ~2000 bytes so we need to shrink it
-      lumine.shell.openExternal((await this.shortenURL(issueURL)) || issueURL);
-    } else {
-      lumine.shell.openExternal(issueURL);
+    try {
+      await lumine.shell.openExternal(issue ? issue.html_url : issueURL);
+    } catch (error) {
+      lumine.notifications.addWarning("Unable to open the issue page.", {
+        detail: error.message,
+        dismissable: true,
+      });
     }
   }
 
   async findSimilarIssue(repoURL, issueTitle) {
-    const url = "https://api.github.com/search/issues";
-    const repo = repoURL.replace(/http(s)?:\/\/(\d+\.)?github.com\//gi, "");
-    const query = `${issueTitle} repo:${repo}`;
-    const response = await window.fetch(`${url}?q=${encodeURI(query)}&sort=created`, {
-      method: "GET",
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      if (data.items) {
-        const issues = {};
-        for (const issue of data.items) {
-          if (issue.title.includes(issueTitle) && !issues[issue.state]) {
-            issues[issue.state] = issue;
+    try {
+      const url = "https://api.github.com/search/issues";
+      const repo = repoURL.replace(/http(s)?:\/\/(\d+\.)?github.com\//gi, "");
+      const query = `${issueTitle} repo:${repo}`;
+      const response = await window.fetch(`${url}?q=${encodeURI(query)}&sort=created`, {
+        method: "GET",
+        headers: {
+          Accept: "application/vnd.github.v3+json",
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.items) {
+          const issues = {};
+          for (const issue of data.items) {
+            if (issue.title.includes(issueTitle) && !issues[issue.state]) {
+              issues[issue.state] = issue;
+            }
           }
+
+          return issues.open || issues.closed;
         }
-
-        return issues.open || issues.closed;
       }
+    } catch {
+      return null;
     }
-  }
-
-  async shortenURL(url) {
-    let encodedUrl = encodeURIComponent(url).substr(0, 5000); // is.gd has 5000 char limit
-    let incompletePercentEncoding = encodedUrl.indexOf("%", encodedUrl.length - 2);
-    if (incompletePercentEncoding >= 0) {
-      // Handle an incomplete % encoding cut-off
-      encodedUrl = encodedUrl.substr(0, incompletePercentEncoding);
-    }
-
-    let result = await fetch("https://is.gd/create.php?format=simple", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `url=${encodedUrl}`,
-    });
-
-    return result.text();
+    return null;
   }
 
   getRepoURL(packageName) {
