@@ -154,4 +154,17 @@ describe("DeprecationCopView", () => {
       ),
     ).toBeNull();
   });
+
+  it("reports a package disable failure", async () => {
+    const error = new Error("deactivation failed");
+    spyOn(lumine.packages, "disablePackage").and.returnValue(Promise.reject(error));
+    spyOn(lumine.notifications, "addError");
+
+    await deprecationCopView.disablePackage("broken-package");
+
+    expect(lumine.notifications.addError).toHaveBeenCalledWith(
+      "Unable to disable broken-package.",
+      { detail: error.message, dismissable: true },
+    );
+  });
 });

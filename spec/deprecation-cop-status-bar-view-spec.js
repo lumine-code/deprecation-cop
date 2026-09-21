@@ -1,5 +1,4 @@
 const Grim = require("@lumine-code/grim");
-const DeprecationCopView = require("../lib/deprecation-cop-view");
 
 describe("DeprecationCopStatusBarView", () => {
   let [deprecatedMethod, statusBarView, workspaceElement] = [];
@@ -45,6 +44,9 @@ describe("DeprecationCopStatusBarView", () => {
   });
 
   it("opens deprecation cop tab when clicked", async () => {
+    // Package unload evicts the package's module tree. Resolve the constructor
+    // from the active generation instead of retaining the pre-activation one.
+    const DeprecationCopView = require("../lib/deprecation-cop-view");
     expect(lumine.workspace.getActivePane().getActiveItem()).not.toExist();
 
     await new Promise((done) => {

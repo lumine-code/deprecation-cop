@@ -157,9 +157,9 @@ module.exports = class DeprecationCopView {
             <button
               className="btn disable-package"
               data-package-name={packageName}
-              onclick={(event) => {
+              onclick={async (event) => {
                 event.preventDefault();
-                this.disablePackage(packageName);
+                await this.disablePackage(packageName);
               }}
             >
               Disable Package
@@ -371,9 +371,16 @@ module.exports = class DeprecationCopView {
     lumine.workspace.open("lumine://config/updates");
   }
 
-  disablePackage(packageName) {
-    if (packageName) {
-      lumine.packages.disablePackage(packageName);
+  async disablePackage(packageName) {
+    if (!packageName) return;
+
+    try {
+      await lumine.packages.disablePackage(packageName);
+    } catch (error) {
+      lumine.notifications.addError(`Unable to disable ${packageName}.`, {
+        detail: error.message,
+        dismissable: true,
+      });
     }
   }
 
