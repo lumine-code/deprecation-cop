@@ -21,7 +21,7 @@
   }
 
   .deprecation-info {
-    padding: 0 var(--component-padding);
+    padding: 0 var(--ui-spacing);
   }
 
   .deprecation-info:hover {
@@ -35,7 +35,7 @@
     .deprecation-message {
       padding: 5px 0 5px 28px;
       line-height: 1.4;
-      font-size: var(--font-size);
+      font-size: var(--ui-font-size);
 
       p:last-child {
         margin-bottom: 0;
@@ -59,8 +59,8 @@
 
   .stack-trace {
     background-color: var(--tool-panel-background-color);
-    padding: var(--component-padding);
-    margin-bottom: var(--component-padding);
+    padding: var(--ui-spacing);
+    margin-bottom: var(--ui-spacing);
   }
 
   a {
