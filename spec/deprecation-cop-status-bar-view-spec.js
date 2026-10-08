@@ -57,4 +57,52 @@ describe("DeprecationCopStatusBarView", () => {
       statusBarView.click();
     });
   });
+
+  it("removes the real tooltip registration when the package deactivates", async () => {
+    const element = statusBarView;
+    expect(lumine.tooltips.findTooltips(element).length).toBe(1);
+    await lumine.packages.deactivatePackage("deprecation-cop");
+    expect(lumine.tooltips.findTooltips(element)).toEqual([]);
+    expect(element.isConnected).toBe(false);
+  });
+
+  it("removes the tooltip when its status-bar service edge is disposed", async () => {
+    const main = lumine.packages.getActivePackage("deprecation-cop").mainModule;
+    const StatusBarView =
+      lumine.packages.getActivePackage("status-bar").mainModule.statusBar.constructor;
+    const bar = new StatusBarView();
+    const hub = new lumine.packages.serviceHub.constructor();
+    const consumer = hub.consume("status-bar", "^1.0.0", (provider) =>
+      main.consumeStatusBar(provider),
+    );
+    const provider = hub.provide("status-bar", "1.0.0", bar);
+    await Promise.resolve();
+    await Promise.resolve();
+    const element = bar.getRightTiles()[0].getItem().element;
+    expect(lumine.tooltips.findTooltips(element).length).toBe(1);
+    provider.dispose();
+    expect(bar.getRightTiles().length).toBe(0);
+    expect(lumine.tooltips.findTooltips(element)).toEqual([]);
+    consumer.dispose();
+    bar.destroy();
+  });
+
+  it("does not re-register a tooltip after a destroyed view receives an update", async () => {
+    const StatusView = require("../lib/deprecation-cop-status-bar-view");
+    const view = new StatusView();
+    await Promise.resolve();
+    view.destroy();
+    view.lastLength = null;
+    view.update();
+    expect(lumine.tooltips.findTooltips(view.element)).toEqual([]);
+    view.toolTipDisposable?.dispose();
+  });
+
+  it("does not register a tooltip if destroyed before its deferred initialization", async () => {
+    const StatusView = require("../lib/deprecation-cop-status-bar-view");
+    const view = new StatusView();
+    view.destroy();
+    await Promise.resolve();
+    expect(lumine.tooltips.findTooltips(view.element)).toEqual([]);
+  });
 });
