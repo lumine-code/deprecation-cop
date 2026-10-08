@@ -2,6 +2,8 @@
 
 Shows deprecated calls used by the editor and installed packages.
 
+Fork of [pulsar-edit/pulsar](https://github.com/pulsar-edit/pulsar) (`packages/deprecation-cop`).
+
 ## Features
 
 - **Deprecation list**: collects deprecated method calls and displays them in a dedicated view.
