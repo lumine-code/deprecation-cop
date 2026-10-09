@@ -14,6 +14,12 @@ module.exports = class DeprecationCopView {
       Grim.on("updated", () => {
         etch.update(this);
       }),
+      lumine.packages.onDidLoadPackage(() => {
+        this.packagePathsByPackageName = null;
+      }),
+      lumine.packages.onDidUnloadPackage(() => {
+        this.packagePathsByPackageName = null;
+      }),
     );
     etch.initialize(this);
     this.subscriptions.add(
@@ -342,7 +348,11 @@ module.exports = class DeprecationCopView {
 
       for (const [packageName, packagePath] of packagePaths) {
         const relativePath = path.relative(packagePath, fileName);
-        if (!/^\.\./.test(relativePath)) {
+        if (
+          relativePath !== ".." &&
+          !relativePath.startsWith(`..${path.sep}`) &&
+          !path.isAbsolute(relativePath)
+        ) {
           return packageName;
         }
       }
