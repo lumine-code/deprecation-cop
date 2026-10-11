@@ -101,7 +101,7 @@ module.exports = class DeprecationCopView {
         <li className="deprecation list-nested-item collapsed">
           <div
             className="deprecation-info list-item"
-            onclick={(event) => event.target.parentElement.classList.toggle("collapsed")}
+            onclick={(event) => event.currentTarget.parentElement.classList.toggle("collapsed")}
           >
             <span className="text-highlight">{packageName || "lumine core"}</span>
             <span>{` (${_.pluralize(
