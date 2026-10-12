@@ -1,3 +1,4 @@
+const windowService = require("./helpers/window-service");
 const Grim = require("@lumine-code/grim");
 
 describe("DeprecationCopStatusBarView", () => {
@@ -72,10 +73,10 @@ describe("DeprecationCopStatusBarView", () => {
       lumine.packages.getActivePackage("status-bar").mainModule.statusBar.constructor;
     const bar = new StatusBarView();
     const hub = new lumine.packages.serviceHub.constructor();
-    const consumer = hub.consume("status-bar", "^1.0.0", (provider) =>
+    const consumer = hub.consume("status-bar", "^2.0.0", (provider) =>
       main.consumeStatusBar(provider),
     );
-    const provider = hub.provide("status-bar", "1.0.0", bar);
+    const provider = hub.provide("status-bar", "2.0.0", windowService(bar));
     await Promise.resolve();
     await Promise.resolve();
     const element = bar.getRightTiles()[0].getItem().element;

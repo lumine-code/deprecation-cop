@@ -1,3 +1,4 @@
+const windowService = require("./helpers/window-service");
 describe("Deprecation Cop exact status payload ownership", () => {
   let main, hub, consumer, bars, providers, StatusBarView;
   const tiles = (bar) =>
@@ -15,7 +16,7 @@ describe("Deprecation Cop exact status payload ownership", () => {
     StatusBarView = lumine.packages.getActivePackage("status-bar").mainModule.statusBar.constructor;
     main = (await lumine.packages.activatePackage("deprecation-cop")).mainModule;
     hub = new lumine.packages.serviceHub.constructor();
-    consumer = hub.consume("status-bar", "^1.0.0", (bar) => main.consumeStatusBar(bar));
+    consumer = hub.consume("status-bar", "^2.0.0", (bar) => main.consumeStatusBar(bar));
     bars = [];
     providers = [];
   });
@@ -33,7 +34,7 @@ describe("Deprecation Cop exact status payload ownership", () => {
       bars.push(bar);
       jasmine.attachToDOM(bar.element);
     }
-    const provider = hub.provide("status-bar", "1.0.0", bar);
+    const provider = hub.provide("status-bar", "2.0.0", windowService(bar));
     providers.push(provider);
     return { bar, provider };
   }
