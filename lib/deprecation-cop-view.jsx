@@ -5,6 +5,7 @@ const etch = require("@lumine-code/etch");
 const fs = require("@lumine-code/fs-plus");
 const Grim = require("@lumine-code/grim");
 const path = require("path");
+const restoreCopiedScroll = require("./restore-copied-scroll");
 
 module.exports = class DeprecationCopView {
   constructor({ uri, expandedPackages = [], scrollTop = 0 }) {
@@ -23,11 +24,7 @@ module.exports = class DeprecationCopView {
       }),
     );
     etch.initialize(this);
-    const initialScrollTop = this.element.scrollTop;
-    requestAnimationFrame(() => {
-      if (!this.destroyed && this.element.scrollTop === initialScrollTop)
-        this.element.scrollTop = scrollTop;
-    });
+    restoreCopiedScroll(this, scrollTop);
     this.subscriptions.add(
       lumine.commands.add(this.element, {
         "core:move-up": () => {
@@ -68,13 +65,14 @@ module.exports = class DeprecationCopView {
         this.element.querySelectorAll(".deprecation:not(.collapsed)"),
         (element) => element.dataset.packageName,
       ),
-      scrollTop: this.element.scrollTop,
+      scrollTop: restoreCopiedScroll.capture(this),
     });
   }
 
   destroy() {
     if (this.destroyed) return;
     this.destroyed = true;
+    this.pendingCopyScrollRestore?.dispose();
     this.subscriptions.dispose();
     return etch.destroy(this);
   }
