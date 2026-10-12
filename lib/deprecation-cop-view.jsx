@@ -7,8 +7,9 @@ const Grim = require("@lumine-code/grim");
 const path = require("path");
 
 module.exports = class DeprecationCopView {
-  constructor({ uri }) {
+  constructor({ uri, expandedPackages = [], scrollTop = 0 }) {
     this.uri = uri;
+    this.expandedPackages = new Set(expandedPackages);
     this.subscriptions = new CompositeDisposable();
     this.subscriptions.add(
       Grim.on("updated", () => {
@@ -22,6 +23,11 @@ module.exports = class DeprecationCopView {
       }),
     );
     etch.initialize(this);
+    const initialScrollTop = this.element.scrollTop;
+    requestAnimationFrame(() => {
+      if (!this.destroyed && this.element.scrollTop === initialScrollTop)
+        this.element.scrollTop = scrollTop;
+    });
     this.subscriptions.add(
       lumine.commands.add(this.element, {
         "core:move-up": () => {
@@ -54,7 +60,21 @@ module.exports = class DeprecationCopView {
     };
   }
 
+  copy({ signal } = {}) {
+    signal?.throwIfAborted();
+    return new DeprecationCopView({
+      uri: this.uri,
+      expandedPackages: Array.from(
+        this.element.querySelectorAll(".deprecation:not(.collapsed)"),
+        (element) => element.dataset.packageName,
+      ),
+      scrollTop: this.element.scrollTop,
+    });
+  }
+
   destroy() {
+    if (this.destroyed) return;
+    this.destroyed = true;
     this.subscriptions.dispose();
     return etch.destroy(this);
   }
@@ -98,10 +118,17 @@ module.exports = class DeprecationCopView {
     } else {
       //TODO_LUMINE: Validate 'lumine core'
       return packageNames.sort().map((packageName) => (
-        <li className="deprecation list-nested-item collapsed">
+        <li
+          className={`deprecation list-nested-item${this.expandedPackages.has(packageName) ? "" : " collapsed"}`}
+          data-package-name={packageName}
+        >
           <div
             className="deprecation-info list-item"
-            onclick={(event) => event.currentTarget.parentElement.classList.toggle("collapsed")}
+            onclick={(event) => {
+              const collapsed = event.currentTarget.parentElement.classList.toggle("collapsed");
+              if (collapsed) this.expandedPackages.delete(packageName);
+              else this.expandedPackages.add(packageName);
+            }}
           >
             <span className="text-highlight">{packageName || "lumine core"}</span>
             <span>{` (${_.pluralize(
