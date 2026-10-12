@@ -57,16 +57,12 @@ module.exports = class DeprecationCopView {
     };
   }
 
-  copy({ signal } = {}) {
-    signal?.throwIfAborted();
-    return new DeprecationCopView({
-      uri: this.uri,
-      expandedPackages: Array.from(
-        this.element.querySelectorAll(".deprecation:not(.collapsed)"),
-        (element) => element.dataset.packageName,
-      ),
-      scrollTop: restoreCopiedScroll.capture(this),
-    });
+  canCopy() {
+    return false;
+  }
+
+  getSingletonKey() {
+    return "deprecation-cop:main";
   }
 
   destroy() {
