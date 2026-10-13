@@ -28,6 +28,7 @@ describe("DeprecationCopStatusBarView", () => {
   it("exposes its report in the context menu without executing a right-click", () => {
     const menu = lumine.contextMenu.templateForElement(statusBarView);
     expect(menu.map((item) => item.command)).toEqual(["deprecation-cop:view"]);
+    expect(menu[0].mouseBindingLabel).toBe("LMB");
     const dispatch = spyOn(lumine.commands, "dispatch");
     statusBarView.dispatchEvent(new MouseEvent("click", { button: 2 }));
     expect(dispatch).not.toHaveBeenCalled();
