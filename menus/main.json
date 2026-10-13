@@ -1,4 +1,34 @@
 {
+  "menu": [
+    {
+      "label": "View",
+      "submenu": [
+        {
+          "label": "Developer",
+          "submenu": [
+            {
+              "label": "Deprecations",
+              "command": "deprecation-cop:view"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Packages",
+      "submenu": [
+        {
+          "label": "Deprecation Cop",
+          "submenu": [
+            {
+              "label": "View Deprecations",
+              "command": "deprecation-cop:view"
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "context-menu": {
     "status-bar-tile.deprecation-cop-status": [
       { "type": "separator" },
