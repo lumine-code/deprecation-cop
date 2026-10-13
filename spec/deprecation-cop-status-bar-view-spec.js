@@ -30,7 +30,6 @@ describe("DeprecationCopStatusBarView", () => {
   it("exposes its report in the context menu without executing a right-click", () => {
     const menu = lumine.contextMenu.templateForElement(statusBarView);
     expect(menu.map((item) => item.command)).toEqual(["deprecation-cop:view"]);
-    expect(menu[0].mouseBindingLabel).toBe("LMB");
     const [tooltip] = lumine.tooltips.findTooltips(statusBarView);
     expect(tooltip.options.keyBindingCommand).toBe("deprecation-cop:view");
     expect(tooltip.options.keyBindingExtra).toBeUndefined();

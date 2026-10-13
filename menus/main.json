@@ -4,8 +4,7 @@
       { "type": "separator" },
       {
         "label": "View Deprecations",
-        "command": "deprecation-cop:view",
-        "mouseBindingLabel": "LMB"
+        "command": "deprecation-cop:view"
       },
       { "type": "separator" }
     ]

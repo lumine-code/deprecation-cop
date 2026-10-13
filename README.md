@@ -20,6 +20,10 @@ Commands available in `lumine-workspace`:
 
 - `deprecation-cop:view`: open the deprecation cop view.
 
+## Usage
+
+Left-click the status bar count to open the deprecation report. Right-click opens a menu with the same report action.
+
 ## Services
 
 - `status-bar`: consumed to show the deprecation count in the status bar.
