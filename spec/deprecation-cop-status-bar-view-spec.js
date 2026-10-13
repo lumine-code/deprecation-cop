@@ -1,4 +1,6 @@
 const windowService = require("./helpers/window-service");
+const { createRequire } = require("node:module");
+const path = require("node:path");
 const Grim = require("@lumine-code/grim");
 
 describe("DeprecationCopStatusBarView", () => {
@@ -58,7 +60,9 @@ describe("DeprecationCopStatusBarView", () => {
   it("opens deprecation cop tab when clicked", async () => {
     // Package unload evicts the package's module tree. Resolve the constructor
     // from the active generation instead of retaining the pre-activation one.
-    const DeprecationCopView = require("../lib/deprecation-cop-view");
+    const pack = lumine.packages.getActivePackage("deprecation-cop");
+    const requireActive = createRequire(path.join(pack.path, "package.json"));
+    const DeprecationCopView = requireActive("./lib/deprecation-cop-view");
     expect(lumine.workspace.getActivePane().getActiveItem()).not.toExist();
 
     await new Promise((done) => {
