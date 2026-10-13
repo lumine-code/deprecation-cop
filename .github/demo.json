@@ -1,0 +1,16 @@
+{
+  "title": "deprecation-cop",
+  "description": "The deprecation-cop view in Lumine.",
+  "recordedOn": "2026-10-13",
+  "sourceRevision": "9be82b6368954df2c674851d5595d670f365c3b8",
+  "mode": "normal",
+  "fontSettings": "default",
+  "images": [
+    {
+      "file": "demo.png",
+      "label": "The deprecation-cop view in Lumine.",
+      "width": 1100,
+      "height": 340
+    }
+  ]
+}

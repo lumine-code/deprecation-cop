@@ -10,6 +10,8 @@ Fork of [pulsar-edit/pulsar](https://github.com/pulsar-edit/pulsar) (`packages/d
 - **Stack traces**: shows where each deprecated call originates.
 - **Status bar count**: reports the number of deprecations from the status bar.
 
+![The deprecation-cop view in Lumine.](.github/demo.png)
+
 ## Installation
 
 To install `deprecation-cop` search for it in the Install pane of the Lumine settings, or run the command `lumine --install lumine-code/deprecation-cop`.
