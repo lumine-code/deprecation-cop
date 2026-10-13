@@ -25,6 +25,16 @@ describe("DeprecationCopStatusBarView", () => {
     expect(statusBarView).not.toShow();
   });
 
+  it("exposes its report in the context menu without executing a right-click", () => {
+    const menu = lumine.contextMenu.templateForElement(statusBarView);
+    expect(menu.map((item) => item.command)).toEqual(["deprecation-cop:view"]);
+    const dispatch = spyOn(lumine.commands, "dispatch");
+    statusBarView.dispatchEvent(new MouseEvent("click", { button: 2 }));
+    expect(dispatch).not.toHaveBeenCalled();
+    statusBarView.click();
+    expect(dispatch).toHaveBeenCalledWith(lumine.workspace.getElement(), menu[0].command);
+  });
+
   it("increments when there are deprecated methods", () => {
     deprecatedMethod = () => Grim.deprecate("This isn't used");
     const anotherDeprecatedMethod = () => Grim.deprecate("This either");
