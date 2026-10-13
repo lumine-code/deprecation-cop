@@ -8,7 +8,9 @@
           "submenu": [
             {
               "label": "Deprecations",
-              "command": "deprecation-cop:view"
+              "command": "deprecation-cop:view",
+              "group": "diagnostics",
+              "order": 10
             }
           ]
         }
