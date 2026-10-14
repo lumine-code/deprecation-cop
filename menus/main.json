@@ -1,18 +1,13 @@
 {
   "menu": [
     {
-      "label": "View",
+      "label": "Developer",
       "submenu": [
         {
-          "label": "Developer",
-          "submenu": [
-            {
-              "label": "Deprecations",
-              "command": "deprecation-cop:view",
-              "group": "diagnostics",
-              "order": 10
-            }
-          ]
+          "label": "Deprecations",
+          "command": "deprecation-cop:view",
+          "group": "diagnostics",
+          "order": 10
         }
       ]
     },
