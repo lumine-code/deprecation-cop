@@ -1,16 +1,61 @@
 {
   "title": "deprecation-cop",
   "description": "The deprecation-cop view in Lumine.",
-  "recordedOn": "2026-10-13",
-  "sourceRevision": "9be82b6368954df2c674851d5595d670f365c3b8",
+  "recordedOn": "2026-10-14",
+  "sourceRevision": "dc5a9335c7eab1a44a917605d3c7e8cb2dd31599",
+  "themeSourceRevision": "14a69683b0e3238e2bc128fbfae3866c1e4ee9c6",
   "mode": "normal",
   "fontSettings": "default",
+  "scenario": "demo.js",
+  "recipeHash": "bf65b1f11f99a026d469330361d6b29b9dfb26814c5647e6cf04af339ad638fd",
+  "environment": {
+    "platform": "win32",
+    "arch": "x64",
+    "electron": "44.7.0",
+    "chrome": "152.0.7977.130",
+    "devicePixelRatio": 1,
+    "locale": "en-GB",
+    "fontFamily": "Fira Code, Menlo, DejaVu Sans Mono, Consolas, monospace",
+    "fontSize": 14,
+    "themes": ["one-day-syntax", "one-day-ui"]
+  },
+  "viewport": { "width": 1100, "height": 340 },
+  "cornerRadius": 10,
+  "sources": {
+    "editor": {
+      "revision": "385bd1b3ac2db600f1c7e077474d9da4d6deebc4",
+      "dirty": true,
+      "workingTreeHash": "08ba420fdc2c3d9a27ae9973c15f1efb7ccd57a582986958a8f1049bc8f34d60"
+    },
+    "package": {
+      "revision": "dc5a9335c7eab1a44a917605d3c7e8cb2dd31599",
+      "dirty": true,
+      "workingTreeHash": "af8becf7f7bd13f252c4991764cf1e5e4ca8dd3885b03445b0930d94303cd6db"
+    },
+    "deprecation-cop": {
+      "revision": "dc5a9335c7eab1a44a917605d3c7e8cb2dd31599",
+      "dirty": true,
+      "workingTreeHash": "af8becf7f7bd13f252c4991764cf1e5e4ca8dd3885b03445b0930d94303cd6db"
+    },
+    "one-theme": {
+      "revision": "14a69683b0e3238e2bc128fbfae3866c1e4ee9c6",
+      "dirty": true,
+      "workingTreeHash": "50ec2f83a6347dd8113870992ec4eb2be4014f3d9e12213c2f51b543f1eca793"
+    }
+  },
+  "fixtures": [
+    {
+      "file": "signal.js",
+      "sha256": "2a36953daadd1ae53070d0ff7ceab4624395fdb957104aa6e8ec92d785cadf1d"
+    }
+  ],
   "images": [
     {
       "file": "demo.png",
       "label": "The deprecation-cop view in Lumine.",
       "width": 1100,
-      "height": 340
+      "height": 340,
+      "sha256": "59087d3d006c5773ec41c355dc4dbf6b5bd47ebf7326b98c9f052dc653c1a931"
     }
   ]
 }
