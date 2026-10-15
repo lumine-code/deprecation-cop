@@ -27,13 +27,16 @@
     }
   ],
   "context-menu": {
-    "status-bar-tile.deprecation-cop-status": [
-      { "type": "separator" },
-      {
-        "label": "View Deprecations",
-        "command": "deprecation-cop:view"
-      },
-      { "type": "separator" }
-    ]
+    "status-bar-tile.deprecation-cop-status": {
+      "commandTarget": "focus",
+      "items": [
+        { "type": "separator" },
+        {
+          "label": "View Deprecations",
+          "command": "deprecation-cop:view"
+        },
+        { "type": "separator" }
+      ]
+    }
   }
 }
