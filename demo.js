@@ -1,4 +1,10 @@
 // Authentic package usage. Run with lumine/script/demo.js; fixtures stay in demo/.
+function sampleEntry(state) {
+  return Array.from(state.report?.element.querySelectorAll(".deprecation") || []).find((entry) =>
+    entry.querySelector(".deprecation-info")?.textContent.startsWith("signal-analysis-demo"),
+  );
+}
+
 module.exports = {
   version: 1,
   dependencies: [],
@@ -35,18 +41,11 @@ module.exports = {
           "deprecation report",
         );
         state.report = lumine.workspace.getActivePaneItem();
-        await waitFor(
-          () => state.report.element.querySelector('[data-package-name="signal-analysis-demo"]'),
-          "recorded sample package call",
-        );
-        state.report.element
-          .querySelector('[data-package-name="signal-analysis-demo"] .deprecation-info')
-          .click();
+        await waitFor(() => sampleEntry(state), "recorded sample package call");
+        sampleEntry(state).querySelector(".deprecation-info").click();
       },
       ready({ state }) {
-        const entry = state.report?.element.querySelector(
-          '[data-package-name="signal-analysis-demo"]',
-        );
+        const entry = sampleEntry(state);
         return Boolean(
           entry &&
           !entry.classList.contains("collapsed") &&
