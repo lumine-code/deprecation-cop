@@ -10,7 +10,7 @@ Fork of [pulsar-edit/pulsar](https://github.com/pulsar-edit/pulsar) (`packages/d
 - **Stack traces**: shows where each deprecated call originates.
 - **Status bar count**: reports the number of deprecations from the status bar.
 
-![The deprecation-cop view in Lumine.](.github/demo.png)
+![Inspect a deprecated API call and the package code that made it.](.github/demo.png)
 
 ## Installation
 
