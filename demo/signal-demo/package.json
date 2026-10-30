@@ -1,0 +1,11 @@
+{
+  "name": "signal-analysis-demo",
+  "version": "1.0.0",
+  "main": "lib/main.js",
+  "engines": {
+    "lumine": "^1.0.0"
+  },
+  "dependencies": {
+    "@lumine-code/grim": "github:lumine-code/grim#d9e238e0bc39a11e18fe18130bbe39dd5b0f7ef6"
+  }
+}
