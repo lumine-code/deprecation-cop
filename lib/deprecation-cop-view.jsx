@@ -79,7 +79,11 @@ module.exports = class DeprecationCopView {
 
   render() {
     return (
-      <div className="deprecation-cop pane-item native-key-bindings" tabIndex="-1">
+      <div
+        className="deprecation-cop pane-item native-key-bindings"
+        tabIndex="-1"
+        attributes={{ "data-scrollbar-kind": "panel" }}
+      >
         <div className="panel">
           <div className="padded deprecation-overview">
             <div className="pull-right btn-group">
