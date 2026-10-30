@@ -11,7 +11,7 @@ function legacyAverage(samples) {
 
 module.exports = {
   activate() {
-    return new Promise((resolve) => {
+    this.finished = new Promise((resolve) => {
       this.pending = setImmediate(() => {
         this.pending = null;
         this.mean = legacyAverage([0.2, 0.8, -0.5, 1.0]);

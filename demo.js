@@ -17,6 +17,7 @@ module.exports = {
       process.platform === "win32" ? "junction" : "dir",
     );
     state.samplePackage = await lumine.packages.activatePackage(fixture("signal-demo"));
+    await state.samplePackage.mainModule.finished;
     if (state.samplePackage.mainModule.mean !== 0.375)
       throw new Error("The sample package did not execute its legacy averaging API.");
   },
