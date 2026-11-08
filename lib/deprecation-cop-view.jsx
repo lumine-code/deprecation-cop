@@ -440,26 +440,32 @@ module.exports = class DeprecationCopView {
   }
 
   scrollUp() {
+    lumine.scrollbars.reveal(this.element);
     this.element.scrollTop -= this.element.ownerDocument.body.offsetHeight / 20;
   }
 
   scrollDown() {
+    lumine.scrollbars.reveal(this.element);
     this.element.scrollTop += this.element.ownerDocument.body.offsetHeight / 20;
   }
 
   pageUp() {
+    lumine.scrollbars.reveal(this.element);
     this.element.scrollTop -= this.element.offsetHeight;
   }
 
   pageDown() {
+    lumine.scrollbars.reveal(this.element);
     this.element.scrollTop += this.element.offsetHeight;
   }
 
   scrollToTop() {
+    lumine.scrollbars.reveal(this.element);
     this.element.scrollTop = 0;
   }
 
   scrollToBottom() {
+    lumine.scrollbars.reveal(this.element);
     this.element.scrollTop = this.element.scrollHeight;
   }
 };
