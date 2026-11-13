@@ -43,10 +43,10 @@
     "DeprecationCopView": "deserializeDeprecationCopView"
   },
   "dependencies": {
-    "@lumine-code/etch": "github:lumine-code/etch#74fb2ef3e049ea45ab3b826d2f74722d5e998bd3",
-    "@lumine-code/fs-plus": "github:lumine-code/fs-plus#bca7a511650b97ff4fa8074003b3b7e7483bce1f",
-    "@lumine-code/grim": "github:lumine-code/grim#d5d378c43cc7285519f3ef1091f5594509257a32",
-    "@lumine-code/underscore-plus": "github:lumine-code/underscore-plus#7a4b307293a7795831841b1ae9b0d3a1843f3760"
+    "@lumine-code/etch": "github:lumine-code/etch#096f2ad5cb3e7c2eca24df08670af77570abd4e7",
+    "@lumine-code/fs-plus": "github:lumine-code/fs-plus#8dc1244134105247e1a652edc22bb49ec97412e6",
+    "@lumine-code/grim": "github:lumine-code/grim#d32ca11a7bfab00f7368cafbc9c2f42e096b126a",
+    "@lumine-code/underscore-plus": "github:lumine-code/underscore-plus#2579dbc084a5101baf5643652ef50c7a3fa8cd9f"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
