@@ -34,6 +34,45 @@ describe("DeprecationCopView", () => {
     expect(deprecationCopView.element.textContent).toMatch(/This isn't used/);
   });
 
+  it("routes readonly keyboard scrolling around native bindings without pulsing for updates", async () => {
+    const element = deprecationCopView.element;
+    const reveal = spyOn(lumine.scrollbars, "reveal");
+    await deprecationCopView.update();
+    expect(reveal).not.toHaveBeenCalled();
+    const filler = document.createElement("div");
+    filler.style.minHeight = "1200px";
+    element.append(filler);
+    const style = element.getAttribute("style");
+    try {
+      element.style.height = "120px";
+      element.style.maxHeight = "120px";
+      element.scrollTop = 0;
+      lumine.keymaps.loadBundledKeymaps();
+      element.focus();
+      const key = new KeyboardEvent("keydown", { key: "ArrowDown", cancelable: true });
+      Object.defineProperty(key, "target", { value: element });
+      lumine.keymaps.handleKeyboardEvent(key);
+      expect(key.defaultPrevented).toBeTrue();
+      expect(element.scrollTop).toBeGreaterThan(0);
+      expect(reveal).toHaveBeenCalledOnceWith(element);
+      const button = element.querySelector("button");
+      expect(lumine.commands.canDispatch(button, "core:move-down")).toBeFalse();
+      await lumine.commands.dispatch(button, "core:move-down");
+      expect(reveal).toHaveBeenCalledTimes(1);
+    } finally {
+      filler.remove();
+      if (style === null) element.removeAttribute("style");
+      else element.setAttribute("style", style);
+    }
+  });
+
+  it("releases its scroll navigation binding when the view is closed", async () => {
+    const element = deprecationCopView.element;
+    expect(lumine.scrollbars.navigationBindings.has(element)).toBeTrue();
+    await lumine.workspace.paneForItem(deprecationCopView).destroyItem(deprecationCopView, true);
+    expect(lumine.scrollbars.navigationBindings.has(element)).toBeFalse();
+  });
+
   it("skips stack entries which go through node_modules/ files when determining package name", () => {
     const stack = [
       {

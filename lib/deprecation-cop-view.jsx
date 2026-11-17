@@ -25,28 +25,7 @@ module.exports = class DeprecationCopView {
     );
     etch.initialize(this);
     restoreCopiedScroll(this, scrollTop);
-    this.subscriptions.add(
-      lumine.commands.add(this.element, {
-        "core:move-up": () => {
-          this.scrollUp();
-        },
-        "core:move-down": () => {
-          this.scrollDown();
-        },
-        "core:page-up": () => {
-          this.pageUp();
-        },
-        "core:page-down": () => {
-          this.pageDown();
-        },
-        "core:move-to-top": () => {
-          this.scrollToTop();
-        },
-        "core:move-to-bottom": () => {
-          this.scrollToBottom();
-        },
-      }),
-    );
+    this.subscriptions.add(lumine.scrollbars.bindNavigation(this.element));
   }
 
   serialize() {
@@ -437,35 +416,5 @@ module.exports = class DeprecationCopView {
 
   getIconName() {
     return "alert";
-  }
-
-  scrollUp() {
-    lumine.scrollbars.reveal(this.element);
-    this.element.scrollTop -= this.element.ownerDocument.body.offsetHeight / 20;
-  }
-
-  scrollDown() {
-    lumine.scrollbars.reveal(this.element);
-    this.element.scrollTop += this.element.ownerDocument.body.offsetHeight / 20;
-  }
-
-  pageUp() {
-    lumine.scrollbars.reveal(this.element);
-    this.element.scrollTop -= this.element.offsetHeight;
-  }
-
-  pageDown() {
-    lumine.scrollbars.reveal(this.element);
-    this.element.scrollTop += this.element.offsetHeight;
-  }
-
-  scrollToTop() {
-    lumine.scrollbars.reveal(this.element);
-    this.element.scrollTop = 0;
-  }
-
-  scrollToBottom() {
-    lumine.scrollbars.reveal(this.element);
-    this.element.scrollTop = this.element.scrollHeight;
   }
 };
